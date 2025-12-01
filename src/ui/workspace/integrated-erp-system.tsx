@@ -1,9 +1,20 @@
+'use client';
+
 // ============================================================
 // INTEGRATED ERP SYSTEM - All Modules Connected
 // Multi-Tenant ERP System with SAP Business One Integration
 // ============================================================
 
 import React, { useState } from 'react';
+import FinanceCoreUIAlt from '../previews/finance/finance-core-ui-alt';
+import FinanceCoreComplete1 from '../previews/finance/finance-core-complete-1';
+import FinanceCoreComplete2 from '../previews/finance/finance-core-complete-2';
+import FinanceLiteModule from '../previews/finance/finance-lite-module';
+import FinanceLiteModule2 from '../previews/finance/finance-lite-module-2';
+import FinanceLiteForms from '../previews/finance/finance-lite-forms';
+import SalesCorePart1 from '../previews/sales/sales-core-part1';
+import SalesCorePart2 from '../previews/sales/sales-core-part2';
+import SalesCorePart3 from '../previews/sales/sales-core-part3';
 import {
   // Navigation & Layout
   LayoutDashboard, ChevronDown, ChevronRight, Menu, X, Search,
@@ -46,6 +57,9 @@ import {
 type ModuleView = 
   // Main
   | 'dashboard'
+  // Finance
+  | 'finance-coa' | 'finance-journals' | 'finance-bank'
+  | 'finance-ar' | 'finance-ap' | 'finance-approvals'
   // Sales Core
   | 'sales-dashboard' | 'quotations' | 'sales-orders' | 'deliveries' | 'invoices' | 'pricing'
   // CRM
@@ -87,19 +101,19 @@ const navigationConfig: NavSection[] = [
     color: 'emerald',
     items: [
       {
-        id: 'finance-core', label: 'Finance Core', icon: Landmark, status: 'coming-soon',
+        id: 'finance-core', label: 'Finance Core', icon: Landmark, status: 'ready',
         children: [
-          { id: 'coa', label: 'Chart of Accounts', icon: Layers, view: 'placeholder' },
-          { id: 'journals', label: 'Journal Entries', icon: FileText, view: 'placeholder' },
-          { id: 'bank', label: 'Bank & Cash', icon: Building, view: 'placeholder' },
+          { id: 'coa', label: 'Chart of Accounts', icon: Layers, view: 'finance-coa' },
+          { id: 'journals', label: 'Journal Entries', icon: FileText, view: 'finance-journals' },
+          { id: 'bank', label: 'Bank & Cash', icon: Building, view: 'finance-bank' },
         ]
       },
       {
-        id: 'finance-lite', label: 'Finance Lite', icon: Receipt, status: 'coming-soon',
+        id: 'finance-lite', label: 'Finance Lite', icon: Receipt, status: 'ready',
         children: [
-          { id: 'ar', label: 'AR Aging', icon: TrendingUp, view: 'placeholder' },
-          { id: 'ap', label: 'AP Aging', icon: TrendingUp, view: 'placeholder' },
-          { id: 'approvals', label: 'Approvals', icon: CheckSquare, view: 'placeholder', badge: 5 },
+          { id: 'ar', label: 'AR Aging', icon: TrendingUp, view: 'finance-ar' },
+          { id: 'ap', label: 'AP Aging', icon: TrendingUp, view: 'finance-ap' },
+          { id: 'approvals', label: 'Approvals', icon: CheckSquare, view: 'finance-approvals', badge: 5 },
         ]
       },
     ]
@@ -272,8 +286,8 @@ const getColorClasses = (color: string, variant: 'bg' | 'text' | 'light' = 'bg')
 
 export const IntegratedERPSystem: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [expandedSections, setExpandedSections] = useState<string[]>(['sales']);
-  const [expandedItems, setExpandedItems] = useState<string[]>(['crm']);
+  const [expandedSections, setExpandedSections] = useState<string[]>(['finance', 'sales']);
+  const [expandedItems, setExpandedItems] = useState<string[]>(['finance-core', 'crm']);
   const [currentView, setCurrentView] = useState<ModuleView>('dashboard');
   const [darkMode, setDarkMode] = useState(false);
 
@@ -306,13 +320,31 @@ export const IntegratedERPSystem: React.FC = () => {
       case 'dashboard':
         return <MainDashboard onNavigate={navigateTo} />;
       
+      // Finance
+      case 'finance-coa':
+        return <FinanceCoreUIAlt />;
+      case 'finance-journals':
+        return <FinanceCoreComplete1 />;
+      case 'finance-bank':
+        return <FinanceCoreComplete2 />;
+      case 'finance-ar':
+        return <FinanceLiteModule />;
+      case 'finance-ap':
+        return <FinanceLiteModule2 />;
+      case 'finance-approvals':
+        return <FinanceLiteForms />;
+      
       // Sales Core
       case 'sales-dashboard':
         return <SalesDashboard onNavigate={navigateTo} />;
       case 'quotations':
-        return <QuotationsList />;
+        return <SalesCorePart1 />;
       case 'sales-orders':
-        return <SalesOrdersList />;
+        return <SalesCorePart2 />;
+      case 'deliveries':
+        return <SalesCorePart3 />;
+      case 'invoices':
+        return <SalesCorePart1 initialTab="invoices" />;
       case 'pricing':
         return <PricingView />;
       
@@ -431,64 +463,66 @@ export const IntegratedERPSystem: React.FC = () => {
       </header>
 
       {/* Sidebar */}
-      <aside className={`fixed left-0 top-14 bottom-0 ${sidebarOpen ? 'w-64' : 'w-16'} ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r transition-all duration-300 z-40 overflow-y-auto`}>
-        <div className="p-2">
-          <button onClick={() => navigateTo('dashboard')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg ${currentView === 'dashboard' ? 'bg-blue-50 text-blue-700' : darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-50'}`}>
-            <Home className="w-5 h-5" />
-            {sidebarOpen && <span className="font-medium">Dashboard</span>}
-          </button>
+      <aside className={`fixed left-0 top-14 bottom-0 ${sidebarOpen ? 'w-64' : 'w-16'} ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r transition-all duration-300 z-40 flex flex-col overflow-hidden`}>
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-2">
+            <button onClick={() => navigateTo('dashboard')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg ${currentView === 'dashboard' ? 'bg-blue-50 text-blue-700' : darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-50'}`}>
+              <Home className="w-5 h-5" />
+              {sidebarOpen && <span className="font-medium">Dashboard</span>}
+            </button>
+          </div>
+
+          <nav className="p-2">
+            {navigationConfig.map((section) => (
+              <div key={section.id} className="mb-2">
+                <button onClick={() => toggleSection(section.id)} className={`w-full flex items-center justify-between px-3 py-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-6 h-6 rounded-md ${getColorClasses(section.color)} flex items-center justify-center`}>
+                      <section.icon className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    {sidebarOpen && <span className={`font-semibold text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>{section.title}</span>}
+                  </div>
+                  {sidebarOpen && <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${expandedSections.includes(section.id) ? 'rotate-180' : ''}`} />}
+                </button>
+
+                {sidebarOpen && expandedSections.includes(section.id) && (
+                  <div className="ml-3 mt-1 space-y-0.5">
+                    {section.items.map((item) => (
+                      <div key={item.id}>
+                        <button onClick={() => item.children ? toggleItem(item.id) : null} className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-50'}`}>
+                          <div className="flex items-center gap-2">
+                            <item.icon className="w-4 h-4" />
+                            <span>{item.label}</span>
+                            {item.status === 'coming-soon' && <span className="px-1.5 py-0.5 bg-gray-200 text-gray-500 text-xs rounded">Soon</span>}
+                            {item.status === 'ready' && <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>}
+                          </div>
+                          {item.children && <ChevronRight className={`w-3 h-3 text-gray-400 transition-transform ${expandedItems.includes(item.id) ? 'rotate-90' : ''}`} />}
+                        </button>
+
+                        {item.children && expandedItems.includes(item.id) && (
+                          <div className="ml-6 mt-0.5 space-y-0.5">
+                            {item.children.map((child) => (
+                              <button key={child.id} onClick={() => child.view && navigateTo(child.view)} className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-sm ${currentView === child.view ? `${getColorClasses(section.color, 'light')} ${getColorClasses(section.color, 'text')}` : darkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-50'}`}>
+                                <div className="flex items-center gap-2">
+                                  <child.icon className="w-3.5 h-3.5" />
+                                  <span>{child.label}</span>
+                                </div>
+                                {child.badge && <span className={`px-1.5 py-0.5 text-xs font-medium rounded-full ${currentView === child.view ? `${getColorClasses(section.color)} text-white` : 'bg-gray-200 text-gray-600'}`}>{child.badge}</span>}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
         </div>
 
-        <nav className="p-2">
-          {navigationConfig.map((section) => (
-            <div key={section.id} className="mb-2">
-              <button onClick={() => toggleSection(section.id)} className={`w-full flex items-center justify-between px-3 py-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
-                <div className="flex items-center gap-3">
-                  <div className={`w-6 h-6 rounded-md ${getColorClasses(section.color)} flex items-center justify-center`}>
-                    <section.icon className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  {sidebarOpen && <span className={`font-semibold text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>{section.title}</span>}
-                </div>
-                {sidebarOpen && <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${expandedSections.includes(section.id) ? 'rotate-180' : ''}`} />}
-              </button>
-
-              {sidebarOpen && expandedSections.includes(section.id) && (
-                <div className="ml-3 mt-1 space-y-0.5">
-                  {section.items.map((item) => (
-                    <div key={item.id}>
-                      <button onClick={() => item.children ? toggleItem(item.id) : null} className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-50'}`}>
-                        <div className="flex items-center gap-2">
-                          <item.icon className="w-4 h-4" />
-                          <span>{item.label}</span>
-                          {item.status === 'coming-soon' && <span className="px-1.5 py-0.5 bg-gray-200 text-gray-500 text-xs rounded">Soon</span>}
-                          {item.status === 'ready' && <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>}
-                        </div>
-                        {item.children && <ChevronRight className={`w-3 h-3 text-gray-400 transition-transform ${expandedItems.includes(item.id) ? 'rotate-90' : ''}`} />}
-                      </button>
-
-                      {item.children && expandedItems.includes(item.id) && (
-                        <div className="ml-6 mt-0.5 space-y-0.5">
-                          {item.children.map((child) => (
-                            <button key={child.id} onClick={() => child.view && navigateTo(child.view)} className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-sm ${currentView === child.view ? `${getColorClasses(section.color, 'light')} ${getColorClasses(section.color, 'text')}` : darkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-50'}`}>
-                              <div className="flex items-center gap-2">
-                                <child.icon className="w-3.5 h-3.5" />
-                                <span>{child.label}</span>
-                              </div>
-                              {child.badge && <span className={`px-1.5 py-0.5 text-xs font-medium rounded-full ${currentView === child.view ? `${getColorClasses(section.color)} text-white` : 'bg-gray-200 text-gray-600'}`}>{child.badge}</span>}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </nav>
-
         {sidebarOpen && (
-          <div className={`absolute bottom-0 left-0 right-0 p-3 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} p-3`}>
             <div className={`rounded-lg p-3 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>

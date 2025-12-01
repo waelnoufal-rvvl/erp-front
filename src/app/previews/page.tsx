@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { previewList } from '@/modules/previews/registry';
+import { previewList } from '@/ui/previews/registry';
 
 export default function PreviewsIndexPage() {
   return (
@@ -12,7 +12,8 @@ export default function PreviewsIndexPage() {
           ERP Experience Gallery
         </h1>
         <p className="text-slate-600">
-          Browse the generated module previews and dashboards from the Claude artifacts. Click any card to open it in isolation.
+          Two curated previews only: a focused dashboard shell and the main ERP workspace that loads every module from the sidebar.
+          Pick one to explore it in isolation.
         </p>
       </div>
 

@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { previewModules } from '@/modules/previews/registry';
+import { redirect } from 'next/navigation';
+import { previewModules } from '@/ui/previews/registry';
 
 interface PreviewPageProps {
   params: { slug: string };
@@ -11,7 +11,7 @@ export default function PreviewPage({ params }: PreviewPageProps) {
   const preview = previewModules[params.slug];
 
   if (!preview) {
-    return notFound();
+    redirect('/previews/integrated-erp-system');
   }
 
   const PreviewComponent = dynamic(preview.loader, {

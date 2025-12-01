@@ -1,6 +1,6 @@
 'use client';
 
-import IntegratedERPSystem from '@/modules/integrated-erp-system';
+import IntegratedERPSystem from '@/ui/workspace/integrated-erp-system';
 
 export default function HomePage() {
   return <IntegratedERPSystem />;
